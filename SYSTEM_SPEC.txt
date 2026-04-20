@@ -1,0 +1,42 @@
+SYSTEM SPEC — CTRADER BOT ECOSYSTEM
+
+ALGEMENE PRINCIPES:
+- Alle bots moeten samenwerken zonder conflicten
+- Veiligheid > winst
+- Geen enkele bot mag een trade openen zonder SL
+- Elke bot moet logging ondersteunen
+
+ORDER REGELS:
+- Maximaal 1 stop/market order + 1 limit order per trade
+- Geen market orders tenzij expliciet toegestaan
+- Elke order MOET een stoploss bevatten
+
+RISK MANAGEMENT:
+- Max risico per trade: instelbaar (% van equity)
+- Max totale exposure: instelbaar
+- Daily loss limit: bij breach → alle trading stoppen
+
+EXECUTION HYGIENE:
+- Slippage check verplicht
+- Spread check optioneel instelbaar
+- Foute orders moeten automatisch gecorrigeerd of gesloten worden
+
+TRADE LOGICA:
+- Alleen traden als er een trend is
+- Geen trend = geen entries
+
+BOT GEDRAG:
+- Bots mogen elkaar niet overrulen zonder prioriteitsregels
+- Fouten moeten gelogd worden
+- Elke bot moet aan/uit gezet kunnen worden
+
+PRIORITEIT (hoog → laag):
+1. Stoploss Enforcer
+2. Risk Limiter
+3. Equity Protection
+4. Discipline Bot
+5. Anti-Overtrading Bot
+6. Order Sanitizer
+7. Execution Hygiene
+8. Regime Detection
+9. Margin Guard
