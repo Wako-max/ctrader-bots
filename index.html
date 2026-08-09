@@ -1,176 +1,453 @@
 <!doctype html>
 <html lang="nl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <title>Daginfo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Omnizorg Vandaag</title>
   <style>
-    :root {
-      --bg: #f3f5f7;
-      --card: #ffffff;
-      --ink: #12212d;
-      --muted: #61707b;
-      --line: #dce3e8;
-      --accent: #1d6f7a;
-      --shadow: 0 12px 36px rgba(20, 39, 52, .10);
-    }
     * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
-    body { min-height: 100vh; overflow: hidden; }
-    .screen { min-height: 100vh; padding: clamp(24px, 3vw, 56px); display: grid; grid-template-rows: auto 1fr auto; gap: clamp(22px, 2.4vw, 38px); }
-    header { display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; border-bottom: 1px solid var(--line); padding-bottom: clamp(18px, 1.8vw, 28px); }
-    .brand { display: flex; align-items: center; gap: 18px; }
-    .mark { width: 16px; height: 58px; border-radius: 999px; background: var(--accent); }
-    h1 { margin: 0; font-size: clamp(40px, 4.3vw, 76px); line-height: .95; letter-spacing: -.045em; }
-    .subtitle { margin-top: 10px; color: var(--muted); font-weight: 600; font-size: clamp(18px, 1.35vw, 26px); }
-    .clock { text-align: right; flex: 0 0 auto; }
-    .date { font-size: clamp(20px, 1.7vw, 30px); font-weight: 700; color: var(--muted); }
-    .time { margin-top: 4px; font-size: clamp(42px, 4vw, 70px); font-weight: 800; letter-spacing: -.035em; }
-    main { min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); gap: clamp(18px, 1.7vw, 30px); }
-    .category { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: clamp(22px, 2vw, 34px); box-shadow: var(--shadow); min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
-    .category h2 { margin: 0 0 18px; font-size: clamp(24px, 2.15vw, 38px); letter-spacing: -.025em; display: flex; align-items: center; gap: 12px; }
-    .category h2:before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
-    .items { display: grid; gap: 12px; min-height: 0; overflow: hidden; }
-    .item { display: grid; grid-template-columns: auto 1fr; gap: 16px; padding: 14px 0; border-top: 1px solid var(--line); }
-    .item:first-child { border-top: 0; padding-top: 0; }
-    .item-time { min-width: 84px; font-weight: 800; color: var(--accent); font-size: clamp(21px, 1.45vw, 28px); }
-    .item-title { font-weight: 800; font-size: clamp(22px, 1.55vw, 30px); line-height: 1.13; }
-    .item-details { color: var(--muted); font-size: clamp(17px, 1.2vw, 23px); line-height: 1.32; margin-top: 4px; }
-    .empty { color: var(--muted); font-size: clamp(20px, 1.3vw, 26px); padding-top: 10px; }
-    footer { display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: clamp(14px, 1vw, 18px); }
-    .status { display: flex; align-items: center; gap: 9px; }
-    .dot { width: 9px; height: 9px; border-radius: 999px; background: #2f8d65; }
-    .error .dot { background: #b85c47; }
-    @media (max-width: 900px), (orientation: portrait) {
+    html, body { margin: 0; width: 100%; height: 100%; }
+    body {
+      overflow: hidden;
+      background: linear-gradient(145deg, #f7f1e7 0%, #eee5d7 100%);
+      color: #20262c;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .screen {
+      width: 100vw;
+      height: 100vh;
+      padding: 2.2vw;
+      display: grid;
+      grid-template-rows: 15vh 23vh 1fr 4vh;
+      gap: 1.5vh;
+    }
+    .top {
+      display: flex;
+      align-items: stretch;
+      gap: 1.2vw;
+    }
+    .brand, .clock, .hero-main, .hero-side, .card {
+      background: rgba(255,255,255,.94);
+      border: 1px solid #e7ddcf;
+      box-shadow: 0 12px 34px rgba(47,37,24,.09);
+    }
+    .brand {
+      flex: 1;
+      border-radius: 28px;
+      padding: 1.4vw 1.6vw;
+      display: flex;
+      align-items: center;
+      gap: 1.2vw;
+    }
+    .brand-bar {
+      width: .7vw;
+      min-width: 10px;
+      height: 100%;
+      border-radius: 999px;
+      background: #d98b22;
+    }
+    .eyebrow {
+      color: #9b6517;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      font-size: 1vw;
+      font-weight: 800;
+    }
+    h1 {
+      margin: .25vh 0 0;
+      font-size: 3.1vw;
+      line-height: .95;
+      letter-spacing: -.04em;
+    }
+    .sub {
+      color: #6b747b;
+      margin-top: .65vh;
+      font-size: 1.15vw;
+      font-weight: 600;
+    }
+    .clock {
+      width: 28vw;
+      border-radius: 28px;
+      padding: 1.2vw 1.5vw;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .date {
+      color: #69737b;
+      font-weight: 700;
+      font-size: 1.3vw;
+    }
+    .time {
+      margin-top: .4vh;
+      font-weight: 900;
+      font-size: 3.5vw;
+      line-height: .9;
+      letter-spacing: -.045em;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.45fr .55fr;
+      gap: 1.2vw;
+      min-height: 0;
+    }
+    .hero-main, .hero-side {
+      border-radius: 28px;
+      min-height: 0;
+    }
+    .hero-main {
+      padding: 1.4vw 1.7vw;
+      background: radial-gradient(circle at 95% 5%, rgba(217,139,34,.18), transparent 34%), rgba(255,255,255,.96);
+      overflow: hidden;
+    }
+    .pill {
+      display: inline-block;
+      background: #faecd7;
+      color: #925b10;
+      border-radius: 999px;
+      padding: .45vh .8vw;
+      font-size: .95vw;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .hero-title {
+      margin-top: 1vh;
+      font-size: 2.55vw;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -.035em;
+    }
+    .hero-details {
+      margin-top: .8vh;
+      color: #626e76;
+      font-size: 1.25vw;
+      line-height: 1.3;
+    }
+    .hero-side {
+      padding: 1.35vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .side-title {
+      color: #8d5c19;
+      font-size: 1vw;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 800;
+    }
+    .side-big {
+      margin-top: .5vh;
+      font-size: 1.9vw;
+      font-weight: 900;
+      line-height: 1.06;
+    }
+    .side-small {
+      margin-top: .7vh;
+      color: #69747b;
+      font-size: 1.05vw;
+      line-height: 1.25;
+    }
+    .cards {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2vw;
+    }
+    .card {
+      border-radius: 25px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+    }
+    .card-head {
+      min-height: 6.2vh;
+      padding: 1vw 1.15vw;
+      border-bottom: 1px solid #ece3d7;
+      display: flex;
+      align-items: center;
+      gap: .75vw;
+      font-size: 1.45vw;
+      font-weight: 900;
+      letter-spacing: -.025em;
+    }
+    .dot {
+      width: .7vw;
+      min-width: 10px;
+      height: .7vw;
+      min-height: 10px;
+      border-radius: 50%;
+      background: #d98b22;
+      box-shadow: 0 0 0 5px #faecd7;
+    }
+    .items {
+      padding: .4vw 1.15vw 1vw;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .item {
+      padding: .95vh 0;
+      border-top: 1px solid #eee6dc;
+    }
+    .item:first-child { border-top: 0; }
+    .item-row {
+      display: flex;
+      gap: .7vw;
+      align-items: flex-start;
+    }
+    .item-time {
+      flex: 0 0 auto;
+      min-width: 4.2vw;
+      padding: .42vh .45vw;
+      text-align: center;
+      border-radius: 10px;
+      background: #faecd7;
+      color: #8f5911;
+      font-size: 1vw;
+      font-weight: 900;
+    }
+    .item-title {
+      font-size: 1.2vw;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+    .item-detail {
+      margin-top: .45vh;
+      color: #66727a;
+      font-size: .98vw;
+      line-height: 1.25;
+    }
+    .empty {
+      color: #6e787e;
+      font-size: 1.05vw;
+      padding-top: 1vh;
+      line-height: 1.3;
+    }
+    footer {
+      padding: 0 .35vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #6c777e;
+      font-size: .78vw;
+      font-weight: 600;
+    }
+    .status { display: flex; align-items: center; gap: .45vw; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #2f8d65; }
+    .status.error .status-dot { background: #b95b49; }
+
+    @media (max-width: 1000px), (orientation: portrait) {
       body { overflow: auto; }
-      header { align-items: flex-start; }
-      main { grid-template-columns: 1fr; grid-auto-rows: auto; }
+      .screen { height: auto; min-height: 100vh; grid-template-rows: auto auto auto auto; }
+      .top { flex-direction: column; }
+      .clock { width: 100%; align-items: flex-start; }
+      .hero { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 7vw; }
+      .eyebrow, .sub, .date, .side-title { font-size: 2.6vw; }
+      .time { font-size: 8vw; }
+      .hero-title { font-size: 5.5vw; }
+      .hero-details, .side-small { font-size: 3vw; }
+      .side-big { font-size: 4vw; }
+      .card-head { font-size: 3.5vw; }
+      .item-title { font-size: 3.2vw; }
+      .item-detail, .item-time, .empty { font-size: 2.6vw; }
+      footer { font-size: 2vw; }
     }
   </style>
 </head>
 <body>
   <div class="screen">
-    <header>
-      <div class="brand"><div class="mark"></div><div><h1 id="pageTitle">Daginfo</h1><div class="subtitle" id="pageSubtitle">Algemene ruimte</div></div></div>
-      <div class="clock"><div class="date" id="dateText"></div><div class="time" id="timeText"></div></div>
-    </header>
-    <main id="content"></main>
-    <footer><div class="status" id="status"><span class="dot"></span><span id="statusText">Actueel</span></div><div>Wordt automatisch bijgewerkt</div></footer>
+    <section class="top">
+      <div class="brand">
+        <div class="brand-bar"></div>
+        <div>
+          <div class="eyebrow">Omnizorg</div>
+          <h1>Vandaag</h1>
+          <div class="sub">Dagoverzicht · algemene ruimte</div>
+        </div>
+      </div>
+      <div class="clock">
+        <div class="date" id="dateText"></div>
+        <div class="time" id="timeText"></div>
+      </div>
+    </section>
+
+    <section class="hero">
+      <div class="hero-main">
+        <div class="pill">Belangrijk vandaag</div>
+        <div class="hero-title" id="heroTitle">Welkom</div>
+        <div class="hero-details" id="heroDetails"></div>
+      </div>
+      <div class="hero-side">
+        <div class="side-title">Vandaag in één oogopslag</div>
+        <div class="side-big" id="sideBig">Een rustige, duidelijke dag</div>
+        <div class="side-small" id="sideSmall">De actuele informatie verschijnt hier automatisch.</div>
+      </div>
+    </section>
+
+    <main class="cards" id="cards"></main>
+
+    <footer>
+      <div class="status" id="status"><span class="status-dot"></span><span id="statusText">Actueel</span></div>
+      <div>Alleen algemene informatie · automatisch bijgewerkt</div>
+    </footer>
   </div>
+
   <script src="config.js"></script>
   <script>
-    var cfg = window.DAGINFO_CONFIG || {};
-    document.getElementById('pageTitle').textContent = cfg.title || 'Daginfo';
-    document.getElementById('pageSubtitle').textContent = cfg.subtitle || '';
-    var CATEGORY_ORDER = ['Programma', 'Maaltijden', 'Eten & drinken', 'Mededelingen', 'Praktisch'];
+    (function () {
+      var cfg = window.DAGINFO_CONFIG || {};
+      var ORDER = ['Programma', 'Maaltijden', 'Mededelingen', 'Praktisch'];
+      var FALLBACK = [
+        { datum:'2026-08-09', categorie:'Mededelingen', tijd:'', titel:'Fijne zondag', details:'Heb je een vraag? Spreek gerust de begeleiding aan.', prioriteit:'5' },
+        { datum:'2026-08-09', categorie:'Programma', tijd:'10:00', titel:'Koffiemoment', details:'Kom gerust aansluiten in de algemene ruimte.', prioriteit:'4' },
+        { datum:'2026-08-09', categorie:'Maaltijden', tijd:'17:30', titel:'Warme maaltijd', details:'Vandaag wordt er gezamenlijk gegeten.', prioriteit:'4' },
+        { datum:'2026-08-09', categorie:'Praktisch', tijd:'', titel:'Algemene ruimte', details:'Houd rekening met elkaar en laat de ruimte netjes achter.', prioriteit:'3' },
+        { datum:'*', categorie:'Praktisch', tijd:'', titel:'Begeleiding', details:'Voor vragen kun je terecht bij de begeleiding.', prioriteit:'2' }
+      ];
 
-    function localISODate(d) {
-      d = d || new Date();
-      var y = d.getFullYear();
-      var m = String(d.getMonth()+1).padStart(2,'0');
-      var day = String(d.getDate()).padStart(2,'0');
-      return y + '-' + m + '-' + day;
-    }
+      function pad(n) { return n < 10 ? '0' + n : String(n); }
+      function isoDate(d) { return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
 
-    function updateClock() {
-      var now = new Date();
-      var dateFmt = new Intl.DateTimeFormat('nl-NL', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-      var timeFmt = new Intl.DateTimeFormat('nl-NL', { hour:'2-digit', minute:'2-digit', hour12:false });
-      var date = dateFmt.format(now);
-      document.getElementById('dateText').textContent = date.charAt(0).toUpperCase() + date.slice(1);
-      document.getElementById('timeText').textContent = timeFmt.format(now);
-    }
-
-    function parseCSV(text) {
-      var rows = [], row = [], field = '', quoted = false, i, c, n;
-      for (i = 0; i < text.length; i++) {
-        c = text[i]; n = text[i+1];
-        if (c === '"' && quoted && n === '"') { field += '"'; i++; }
-        else if (c === '"') quoted = !quoted;
-        else if (c === ',' && !quoted) { row.push(field); field = ''; }
-        else if ((c === '\n' || c === '\r') && !quoted) {
-          if (c === '\r' && n === '\n') i++;
-          row.push(field); field = '';
-          if (row.join('').trim() !== '') rows.push(row);
-          row = [];
-        } else field += c;
+      function updateClock() {
+        var now = new Date();
+        var dateText;
+        try {
+          dateText = new Intl.DateTimeFormat('nl-NL', { weekday:'long', day:'numeric', month:'long', year:'numeric' }).format(now);
+        } catch (e) {
+          dateText = pad(now.getDate()) + '-' + pad(now.getMonth()+1) + '-' + now.getFullYear();
+        }
+        dateText = dateText.charAt(0).toUpperCase() + dateText.slice(1);
+        document.getElementById('dateText').textContent = dateText;
+        document.getElementById('timeText').textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
       }
-      if (field.length || row.length) { row.push(field); rows.push(row); }
-      if (!rows.length) return [];
-      var headers = rows.shift().map(function(h){ return h.trim().toLowerCase(); });
-      return rows.map(function(r){
-        var obj = {};
-        headers.forEach(function(h, idx){ obj[h] = (r[idx] || '').trim(); });
-        return obj;
-      });
-    }
 
-    function render(rows) {
-      var today = localISODate();
-      var todaysRows = rows.filter(function(r){ return r.datum === today || (cfg.includeAlwaysRows !== false && r.datum === '*'); });
-      todaysRows.sort(function(a,b){ return (Number(b.prioriteit||0)-Number(a.prioriteit||0)) || String(a.tijd).localeCompare(String(b.tijd)); });
-      var groups = {}, cats = [], i, row, cat;
-      for (i=0; i<todaysRows.length; i++) {
-        row = todaysRows[i]; cat = row.categorie || 'Overig';
-        if (!groups[cat]) { groups[cat] = []; cats.push(cat); }
-        groups[cat].push(row);
+      function number(v) {
+        var n = parseInt(v, 10);
+        return isNaN(n) ? 0 : n;
       }
-      cats.sort(function(a,b){
-        var ai = CATEGORY_ORDER.indexOf(a), bi = CATEGORY_ORDER.indexOf(b);
-        ai = ai === -1 ? 999 : ai; bi = bi === -1 ? 999 : bi;
-        return ai-bi || a.localeCompare(b);
-      });
-      var content = document.getElementById('content');
-      content.innerHTML = '';
-      if (!cats.length) {
-        var emptyCard = document.createElement('section');
-        emptyCard.className = 'category';
-        emptyCard.innerHTML = '<h2>Vandaag</h2><div class="empty">Er zijn voor vandaag nog geen mededelingen ingevoerd.</div>';
-        content.appendChild(emptyCard); return;
+
+      function escapeHtml(v) {
+        return String(v || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
-      cats.slice(0,4).forEach(function(category){
-        var card = document.createElement('section'); card.className = 'category';
-        var h = document.createElement('h2'); h.textContent = category; card.appendChild(h);
-        var items = document.createElement('div'); items.className = 'items';
-        groups[category].slice(0,6).forEach(function(r){
-          var el = document.createElement('div'); el.className = 'item';
-          var time = document.createElement('div'); time.className = 'item-time'; time.textContent = r.tijd || '•';
-          var body = document.createElement('div');
-          var title = document.createElement('div'); title.className = 'item-title'; title.textContent = r.titel || ''; body.appendChild(title);
-          if (r.details) { var details = document.createElement('div'); details.className = 'item-details'; details.textContent = r.details; body.appendChild(details); }
-          el.appendChild(time); el.appendChild(body); items.appendChild(el);
+
+      function normalizeRow(r) {
+        return {
+          datum: String(r.datum || r.Datum || '').trim(),
+          categorie: String(r.categorie || r.Categorie || '').trim(),
+          tijd: String(r.tijd || r.Tijd || '').trim(),
+          titel: String(r.titel || r['Korte titel'] || r.korteTitel || '').trim(),
+          details: String(r.details || r['Extra uitleg'] || r.extraUitleg || '').trim(),
+          prioriteit: String(r.prioriteit || r.Belangrijkheid || r.belangrijkheid || '').trim()
+        };
+      }
+
+      function render(inputRows) {
+        var today = isoDate(new Date());
+        var rows = [], i, row;
+        for (i = 0; i < inputRows.length; i++) {
+          row = normalizeRow(inputRows[i]);
+          if (row.datum === today || (cfg.includeAlwaysRows !== false && row.datum === '*')) rows.push(row);
+        }
+        rows.sort(function(a,b){
+          var p = number(b.prioriteit) - number(a.prioriteit);
+          if (p) return p;
+          return String(a.tijd || '99:99').localeCompare(String(b.tijd || '99:99'));
         });
-        card.appendChild(items); content.appendChild(card);
-      });
-    }
 
-    function setStatus(ok, text) {
-      var s = document.getElementById('status');
-      if (ok) s.classList.remove('error'); else s.classList.add('error');
-      document.getElementById('statusText').textContent = text;
-    }
+        var hero = rows.length ? rows[0] : null;
+        document.getElementById('heroTitle').textContent = hero ? (hero.titel || 'Vandaag') : 'Geen informatie ingevoerd';
+        document.getElementById('heroDetails').textContent = hero ? (hero.details || '') : 'Vul de daginformatie in via het gedeelde invulblad.';
 
-    function loadData() {
-      if (!cfg.sheetCsvUrl) { setStatus(false, 'Geen gegevensbron ingesteld'); return; }
-      var xhr = new XMLHttpRequest();
-      var joiner = cfg.sheetCsvUrl.indexOf('?') >= 0 ? '&' : '?';
-      xhr.open('GET', cfg.sheetCsvUrl + joiner + '_=' + Date.now(), true);
-      xhr.onreadystatechange = function(){
-        if (xhr.readyState !== 4) return;
-        if (xhr.status >= 200 && xhr.status < 300) {
-          render(parseCSV(xhr.responseText)); setStatus(true, 'Actueel');
-        } else { setStatus(false, 'Kan bron niet verversen'); }
-      };
-      xhr.onerror = function(){ setStatus(false, 'Kan bron niet verversen'); };
-      xhr.send();
-    }
+        var groups = {}, total = rows.length;
+        for (i = 0; i < ORDER.length; i++) groups[ORDER[i]] = [];
+        for (i = 0; i < rows.length; i++) {
+          row = rows[i];
+          if (!groups[row.categorie]) groups[row.categorie] = [];
+          groups[row.categorie].push(row);
+        }
 
-    updateClock();
-    setInterval(updateClock, 1000);
-    loadData();
-    setInterval(loadData, Math.max(15, Number(cfg.refreshSeconds || 60)) * 1000);
-    setTimeout(function(){ location.reload(); }, 60 * 60 * 1000);
+        var categoryCount = 0;
+        for (i = 0; i < ORDER.length; i++) if (groups[ORDER[i]] && groups[ORDER[i]].length) categoryCount++;
+        document.getElementById('sideBig').textContent = total + (total === 1 ? ' bericht voor vandaag' : ' berichten voor vandaag');
+        document.getElementById('sideSmall').textContent = categoryCount ? 'Verdeeld over ' + categoryCount + (categoryCount === 1 ? ' onderdeel.' : ' onderdelen.') : 'Er is nog niets ingevoerd.';
+
+        var cards = document.getElementById('cards');
+        cards.innerHTML = '';
+        for (i = 0; i < ORDER.length; i++) {
+          var cat = ORDER[i], items = groups[cat] || [], html = '';
+          html += '<section class="card">';
+          html += '<div class="card-head"><span class="dot"></span><span>' + escapeHtml(cat) + '</span></div>';
+          html += '<div class="items">';
+          if (!items.length) {
+            html += '<div class="empty">Geen informatie voor vandaag.</div>';
+          } else {
+            var j, it;
+            for (j = 0; j < items.length && j < 5; j++) {
+              it = items[j];
+              html += '<div class="item"><div class="item-row">';
+              html += '<div class="item-time">' + escapeHtml(it.tijd || 'Info') + '</div>';
+              html += '<div><div class="item-title">' + escapeHtml(it.titel || 'Informatie') + '</div>';
+              if (it.details) html += '<div class="item-detail">' + escapeHtml(it.details) + '</div>';
+              html += '</div></div></div>';
+            }
+          }
+          html += '</div></section>';
+          cards.innerHTML += html;
+        }
+      }
+
+      function setStatus(ok, text) {
+        var el = document.getElementById('status');
+        el.className = ok ? 'status' : 'status error';
+        document.getElementById('statusText').textContent = text;
+      }
+
+      function loadData() {
+        var url = cfg.dataUrl || 'data.json';
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url + (url.indexOf('?') >= 0 ? '&' : '?') + '_=' + new Date().getTime(), true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) return;
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              var data = JSON.parse(xhr.responseText);
+              render(data.rows || data || []);
+              setStatus(true, 'Actueel');
+            } catch (e) {
+              render(FALLBACK);
+              setStatus(false, 'Reserveweergave');
+            }
+          } else {
+            render(FALLBACK);
+            setStatus(false, 'Reserveweergave');
+          }
+        };
+        xhr.onerror = function () {
+          render(FALLBACK);
+          setStatus(false, 'Reserveweergave');
+        };
+        xhr.send();
+      }
+
+      updateClock();
+      setInterval(updateClock, 1000);
+      render(FALLBACK);
+      loadData();
+      setInterval(loadData, Math.max(30, Number(cfg.refreshSeconds || 60)) * 1000);
+      setTimeout(function(){ window.location.reload(); }, 60 * 60 * 1000);
+    })();
   </script>
 </body>
 </html>
