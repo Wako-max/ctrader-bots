@@ -1,0 +1,34 @@
+name: Validate Market State Agent
+
+on:
+  pull_request:
+    paths:
+      - 'MarketStateAgentV1/**'
+      - 'tests/test_market_state_expansion_hysteresis.py'
+      - '.github/workflows/validate-market-state.yml'
+  push:
+    branches:
+      - 'feature/market-state-contraction-expansion'
+    paths:
+      - 'MarketStateAgentV1/**'
+      - 'tests/test_market_state_expansion_hysteresis.py'
+      - '.github/workflows/validate-market-state.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore cTrader project
+        run: dotnet restore MarketStateAgentV1/MarketStateAgentV1.csproj
+
+      - name: Build cTrader indicator
+        run: dotnet build MarketStateAgentV1/MarketStateAgentV1.csproj --configuration Release --no-restore -p:AlgoPublish=false
+
+      - name: Test expansion hysteresis
+        run: python3 tests/test_market_state_expansion_hysteresis.py
